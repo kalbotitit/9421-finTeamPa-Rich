@@ -16,14 +16,26 @@ public class Queue<E> {
         tail = null;
     }
 
+    /**
+     * Returns the size of queue
+     * @return the size of queue
+     */
     public int size(){
         return size;
     }
 
+    /**
+     * Return boolean value if the queue is empty
+     * @return boolean value if the queue is empty
+     */
     public boolean isEmpty(){
         return size == 0;
     }
 
+    /**
+     * Add new node in queue
+     * @param e element of new node
+     */
     public void enqueue(E e){
         Node<E> newNode = new Node<>();
         newNode.setElement(e);
@@ -38,6 +50,11 @@ public class Queue<E> {
         size++;
     }
 
+    /**
+     * Returns and removes the rear node of queue
+     * @return and remove rear node of queue
+     * @throws QueueNullException when queue is equal to null
+     */
     public E dequeue() throws QueueNullException{
         if (isEmpty()) throw new QueueNullException("Queue is null");
         E q = head.getElement();
@@ -46,16 +63,27 @@ public class Queue<E> {
         return q;
     }
 
+    /**
+     * Returns only the element of rear node of queue
+     * @return only the element of rear node of queue
+     */
     public E peek(){
         return head.getElement();
     }
 
+    /**
+     * Removes all nodes in queue
+     */
     public void clear() {
         for (int node = 0; node < size; node++){
             head = head.getNext();
         }
     }
 
+    /**
+     * Convert queue into string
+     * @return string of queue
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

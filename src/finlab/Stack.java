@@ -2,7 +2,7 @@ package finlab;
 
 /**
  * Linked list implementation of Stack
- *
+ * Stack for getting the Depth first search
  * @param <E>
  */
 
@@ -72,6 +72,10 @@ public class Stack<E>{
         }
     }
 
+    /**
+     * Convert stack into a string
+     * @return string of stack
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

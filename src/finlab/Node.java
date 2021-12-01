@@ -1,5 +1,9 @@
 package finlab;
 
+/**
+ * Node class of nodes in the stack and queue
+ * @param <E>
+ */
 public class Node<E> {
 
     private E element;
@@ -14,12 +18,15 @@ public class Node<E> {
     public E getElement() {
         return element;
     }
+
     public void setElement(E element) {
         this.element = element;
     }
+
     public Node<E> getNext() {
         return next;
     }
+
     public void setNext(Node<E> prev) {
         this.next = prev;
     }
