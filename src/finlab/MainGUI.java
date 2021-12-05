@@ -44,7 +44,14 @@ public class MainGUI {
 
     private File file;
 
+    private Border border = BorderFactory.createLineBorder(Color.gray);
+
     MainGUI(){
+        menuPanelMethod();
+        inPanelMethod();
+    }
+
+    private void menuPanelMethod(){
 
         // menu section
         // title for menu
@@ -106,7 +113,7 @@ public class MainGUI {
         });
 
 
-        Border border = BorderFactory.createLineBorder(Color.gray);
+
         menuPanel.setVisible(true);
         menuPanel.setBorder(border);
         menuPanel.setBounds(0, 0, 300, 300);
@@ -115,20 +122,30 @@ public class MainGUI {
         for (var menu : menuComponents) menuPanel.add(menu);
     }
 
+    private void inPanelMethod(){
+
+        inputPanel.setVisible(true);
+        inputPanel.setBorder(border);
+        inputPanel.setBounds(300, 0, 600, 80);
+        inputPanel.setLayout(null);
+        for(var components : inComponents) inputPanel.add(components);
+    }
+
     private JPanel getMenuPanel(){
         return menuPanel;
     }
+    private JPanel getInputPanel(){return inputPanel;}
 
     private void graph(){
-
         frame.setTitle("Graph Team Pa-Rich");
         frame.setVisible(true);
-        frame.setSize(new Dimension(700, 340));
+        frame.setSize(new Dimension(900, 340));
         frame.setResizable(false);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.getContentPane().add(getMenuPanel());
+        frame.getContentPane().add(getInputPanel());
     }
 
     public static void main(String[] args) {
