@@ -13,6 +13,7 @@ public class MainGUI {
     // different panels for every section in the gui
     private JPanel menuPanel = new JPanel();
     private JPanel outputPanel = new JPanel();
+    private JPanel inputPanel = new JPanel();
 
     // title for menu panel
     private JLabel menuTitle = new JLabel();
@@ -24,7 +25,22 @@ public class MainGUI {
     private JButton option4 = new JButton();
     private JButton option5 = new JButton();
 
+    // title for output panel
+    private JLabel outTitle = new JLabel();
+    // text area where output will be displayed
+    private JTextArea outDisplay = new JTextArea();
+
+    // title for input panel
+    private JLabel inTitle = new JLabel();
+    // text are to put the input starting vertex for options 2 - 4
+    private JTextArea startingVertex = new JTextArea();     // for opt 2 & 3
+    private JTextArea endingVertex = new JTextArea();       // for option 4
+    // button to start analyze and print the output
+    private JButton start = new JButton();
+
     private JComponent[] menuComponents = {option1, option2, option3, option4, option5, menuTitle};
+    private JComponent[] outComponents = {outTitle, outDisplay};
+    private JComponent[] inComponents = {inTitle, startingVertex, endingVertex, start};
 
     private File file;
 
