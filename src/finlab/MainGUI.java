@@ -27,6 +27,8 @@ public class MainGUI {
 
     // title for output panel
     private JLabel outTitle = new JLabel();
+    private JLabel startTitle = new JLabel();         // title of text area for starting vertex
+    private JLabel endTitle = new JLabel();           // title of text area for ending vertex (opt 4 only)
     // text area where output will be displayed
     private JTextArea outDisplay = new JTextArea();
 
@@ -40,7 +42,7 @@ public class MainGUI {
 
     private JComponent[] menuComponents = {option1, option2, option3, option4, option5, menuTitle};
     private JComponent[] outComponents = {outTitle, outDisplay};
-    private JComponent[] inComponents = {inTitle, startingVertex, endingVertex, start};
+    private JComponent[] inComponents = {inTitle, startTitle, endTitle, startingVertex, endingVertex, start};
 
     private File file;
 
@@ -48,7 +50,6 @@ public class MainGUI {
 
     MainGUI(){
         menuPanelMethod();
-        inPanelMethod();
     }
 
     private void menuPanelMethod(){
@@ -87,16 +88,27 @@ public class MainGUI {
         option2.setText("Perform Depth First Traversal");
         option2.setVisible(true);
         option2.setBounds(10, 90, 280, 30);
+        option2.addActionListener(btn2 -> {
+                opt23InComponents();
+        });
+
         // option 3 button
         // the user wanted to print the breadth first search of graph
         option3.setText("Perform Breadth First Traversal");
         option3.setVisible(true);
         option3.setBounds(10, 130, 280, 30);
+        option3.addActionListener(btn3 -> {
+            opt23InComponents();
+        });
+
         // option 4 button
         // the user wanted to print the shortest path from point a to b
         option4.setText("Show Shortest Path");
         option4.setVisible(true);
         option4.setBounds(10, 170, 280, 30);
+        option4.addActionListener(btn4 -> {
+            opt4InComponents();
+        });
         // option 5 button
         // the user wanted to print the depth first search of graph
         option5.setText("Exit");
@@ -111,24 +123,64 @@ public class MainGUI {
             System.exit(0);
 
         });
-
-
-
         menuPanel.setVisible(true);
         menuPanel.setBorder(border);
         menuPanel.setBounds(0, 0, 300, 300);
         menuPanel.setLayout(null);
-        // add components for menu
-        for (var menu : menuComponents) menuPanel.add(menu);
-    }
 
-    private void inPanelMethod(){
+        //title for input panel
+        inTitle.setText("INPUT");
+        inTitle.setBounds(10, 10, 50, 30);
 
         inputPanel.setVisible(true);
         inputPanel.setBorder(border);
-        inputPanel.setBounds(300, 0, 600, 80);
+        inputPanel.setBounds(300, 0, 600, 100);
         inputPanel.setLayout(null);
+
+        // add components for input panel
         for(var components : inComponents) inputPanel.add(components);
+
+        // add components for menu panel
+        for (var menu : menuComponents) menuPanel.add(menu);
+    }
+
+    private void opt23InComponents(){
+        // label for starting vertex text area
+        startTitle.setText("Starting Vertex:");
+        startTitle.setBounds(10, 40, 90, 30);
+        // text area to put the starting vertex
+        // of depth first and breadth first search
+        startingVertex.setBounds(105, 40, 100, 20);
+        startingVertex.setVisible(true);
+        // button to start analyzing and displaying the results/output
+        start.setVisible(true);
+        start.setText("Start");
+        start.setBounds(220, 40, 90, 30);
+
+        endTitle.setVisible(false);
+        endingVertex.setVisible(false);
+    }
+
+    private void opt4InComponents(){
+        // label for starting vertex text area
+        startTitle.setText("Starting Vertex:");
+        startTitle.setBounds(10, 40, 90, 30);
+        // text area to put the starting vertex
+        // of depth first and breadth first search
+        startingVertex.setBounds(105, 40, 100, 20);
+        startingVertex.setVisible(true);
+        // label for ending vertex area
+        endTitle.setText("Ending Vertex:");
+        endTitle.setBounds(220, 40, 90, 30);
+        endTitle.setVisible(true);
+        // text area to put the ending vertex
+        // for Dijkstra's shortest path
+        endingVertex.setBounds(315, 40, 100, 20);
+        endingVertex.setVisible(true);
+        // button to start analyzing and displaying the results/output
+        start.setVisible(true);
+        start.setText("Start");
+        start.setBounds(425, 40, 90, 30);
     }
 
     private JPanel getMenuPanel(){
@@ -139,7 +191,7 @@ public class MainGUI {
     private void graph(){
         frame.setTitle("Graph Team Pa-Rich");
         frame.setVisible(true);
-        frame.setSize(new Dimension(900, 340));
+        frame.setBounds(100, 100, 900, 340);
         frame.setResizable(false);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
