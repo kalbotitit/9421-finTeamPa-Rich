@@ -27,22 +27,24 @@ public class MainGUI {
 
     // title for output panel
     private JLabel outTitle = new JLabel();
-    private JLabel startTitle = new JLabel();         // title of text area for starting vertex
-    private JLabel endTitle = new JLabel();           // title of text area for ending vertex (opt 4 only)
     // text area where output will be displayed
     private JTextArea outDisplay = new JTextArea();
 
     // title for input panel
     private JLabel inTitle = new JLabel();
+    private JLabel startTitle = new JLabel();         // title of text area for starting vertex
+    private JLabel endTitle = new JLabel();           // title of text area for ending vertex (opt 4 only)
+    private JLabel typeTitle = new JLabel();
     // text are to put the input starting vertex for options 2 - 4
     private JTextArea startingVertex = new JTextArea();     // for opt 2 & 3
     private JTextArea endingVertex = new JTextArea();       // for option 4
-    // button to start analyze and print the output
+    private JTextArea graphType = new JTextArea();          // display the type of graph of the loaded file
+    // button to start analyze and print the result and output
     private JButton result = new JButton();
 
     private JComponent[] menuComponents = {option1, option2, option3, option4, option5, menuTitle};
     private JComponent[] outComponents = {outTitle, outDisplay};
-    private JComponent[] inComponents = {inTitle, startTitle, endTitle, startingVertex, endingVertex, result};
+    private JComponent[] inComponents = {inTitle, startTitle, endTitle, typeTitle, startingVertex, endingVertex, graphType, result};
 
     private File file;
 
@@ -82,6 +84,11 @@ public class MainGUI {
                 file = new File(fileChooser.getSelectedFile().getAbsolutePath());
                 System.out.println(file);
             }
+            typeTitle.setText("Type of Graph:");
+            typeTitle.setBounds(110, 10, 90, 30);
+            graphType.setBounds(210, 10, 90, 20);
+            graphType.setEditable(false);
+            graphType.setText("Directed");
         });
         // option 2 button
         // the user wanted to print the depth first search of graph
@@ -140,11 +147,26 @@ public class MainGUI {
         inputPanel.setBounds(300, 0, 600, 100);
         inputPanel.setLayout(null);
 
+        // title for output panel
+        outTitle.setText("OUTPUT");
+        outTitle.setBounds(10, 10, 50, 30);
+
+        outDisplay.setBounds(10, 50, 550, 120);
+        outDisplay.setEditable(false);
+
+        outputPanel.setVisible(true);
+        outputPanel.setBorder(border);
+        outputPanel.setBounds(300, 100, 600, 240);
+        outputPanel.setLayout(null);
+
         // add components for input panel
         for(var components : inComponents) inputPanel.add(components);
 
         // add components for menu panel
         for (var menu : menuComponents) menuPanel.add(menu);
+
+        // add components for output panel
+        for (var components : outComponents) outputPanel.add(components);
     }
 
     private void opt23InComponents(){
@@ -157,7 +179,7 @@ public class MainGUI {
         startingVertex.setVisible(true);
         // button to start analyzing and displaying the results/output
         result.setVisible(true);
-        result.setText("Start");
+        result.setText("Result");
         result.setBounds(220, 40, 90, 30);
 
         endTitle.setVisible(false);
@@ -182,7 +204,7 @@ public class MainGUI {
         endingVertex.setVisible(true);
         // button to start analyzing and displaying the results/output
         result.setVisible(true);
-        result.setText("Start");
+        result.setText("Result");
         result.setBounds(425, 40, 90, 30);
     }
 
@@ -190,6 +212,9 @@ public class MainGUI {
         return menuPanel;
     }
     private JPanel getInputPanel(){return inputPanel;}
+    private JPanel getOutputPanel(){
+        return outputPanel;
+    }
 
     private void graph(){
         frame.setTitle("Graph Team Pa-Rich");
@@ -201,6 +226,7 @@ public class MainGUI {
 
         frame.getContentPane().add(getMenuPanel());
         frame.getContentPane().add(getInputPanel());
+        frame.getContentPane().add(getOutputPanel());
     }
 
     public static void main(String[] args) {
