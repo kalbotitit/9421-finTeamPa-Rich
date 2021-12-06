@@ -38,11 +38,11 @@ public class MainGUI {
     private JTextArea startingVertex = new JTextArea();     // for opt 2 & 3
     private JTextArea endingVertex = new JTextArea();       // for option 4
     // button to start analyze and print the output
-    private JButton start = new JButton();
+    private JButton result = new JButton();
 
     private JComponent[] menuComponents = {option1, option2, option3, option4, option5, menuTitle};
     private JComponent[] outComponents = {outTitle, outDisplay};
-    private JComponent[] inComponents = {inTitle, startTitle, endTitle, startingVertex, endingVertex, start};
+    private JComponent[] inComponents = {inTitle, startTitle, endTitle, startingVertex, endingVertex, result};
 
     private File file;
 
@@ -89,7 +89,8 @@ public class MainGUI {
         option2.setVisible(true);
         option2.setBounds(10, 90, 280, 30);
         option2.addActionListener(btn2 -> {
-                opt23InComponents();
+            // set the position of input components
+            opt23InComponents();
         });
 
         // option 3 button
@@ -98,6 +99,7 @@ public class MainGUI {
         option3.setVisible(true);
         option3.setBounds(10, 130, 280, 30);
         option3.addActionListener(btn3 -> {
+            // set the position of input components
             opt23InComponents();
         });
 
@@ -107,6 +109,7 @@ public class MainGUI {
         option4.setVisible(true);
         option4.setBounds(10, 170, 280, 30);
         option4.addActionListener(btn4 -> {
+            // set the position of input components
             opt4InComponents();
         });
         // option 5 button
@@ -153,9 +156,9 @@ public class MainGUI {
         startingVertex.setBounds(105, 40, 100, 20);
         startingVertex.setVisible(true);
         // button to start analyzing and displaying the results/output
-        start.setVisible(true);
-        start.setText("Start");
-        start.setBounds(220, 40, 90, 30);
+        result.setVisible(true);
+        result.setText("Start");
+        result.setBounds(220, 40, 90, 30);
 
         endTitle.setVisible(false);
         endingVertex.setVisible(false);
@@ -178,9 +181,9 @@ public class MainGUI {
         endingVertex.setBounds(315, 40, 100, 20);
         endingVertex.setVisible(true);
         // button to start analyzing and displaying the results/output
-        start.setVisible(true);
-        start.setText("Start");
-        start.setBounds(425, 40, 90, 30);
+        result.setVisible(true);
+        result.setText("Start");
+        result.setBounds(425, 40, 90, 30);
     }
 
     private JPanel getMenuPanel(){
