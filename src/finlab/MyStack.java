@@ -2,11 +2,11 @@ package finlab;
 
 /**
  * Linked list implementation of Stack
- * Stack for getting the Depth first search
+ * MyStack for getting the Depth first search
  * @param <E>
  */
 
-public class Stack<E>{
+public class MyStack<E>{
     private Node<E> head = new Node<>();
     private Node<E> tail = new Node<>();
     private int size = 0;

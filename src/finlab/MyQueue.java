@@ -4,17 +4,12 @@ package finlab;
  * Queue for getting vertices for Breadth first search
  * @param <E>
  */
-public class Queue<E> {
+public class MyQueue<E> {
 
     private Node<E> head = new Node<>();
     private Node<E> tail = new Node<>();
     private int size;
 
-    Queue(){
-        size = 0;
-        head = null;
-        tail = null;
-    }
 
     /**
      * Returns the size of queue
