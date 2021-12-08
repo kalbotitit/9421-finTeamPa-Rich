@@ -1,0 +1,7 @@
+UNDIRECTED,,,
+A,B,E,
+B,A,D,E
+C,D,F,
+D,B,C,F
+E,A,B,
+F,C,D,
