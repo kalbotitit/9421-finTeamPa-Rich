@@ -18,7 +18,7 @@ public class MainGUI {
     // title for menu panel
     private JLabel menuTitle = new JLabel();
     // option buttons in the menu
-    private JFileChooser fileChooser = new JFileChooser();
+    private JFileChooser fileChooser = new JFileChooser("res");
     private JButton option1 = new JButton();
     private JButton option2 = new JButton();
     private JButton option3 = new JButton();
@@ -55,6 +55,7 @@ public class MainGUI {
     }
 
     private void menuPanelMethod(){
+        Graph graph = new Graph();
 
         // menu section
         // title for menu
@@ -82,13 +83,13 @@ public class MainGUI {
             int result = fileChooser.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION){
                 file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-                System.out.println(file);
+                graph.readCSV(file);
             }
             typeTitle.setText("Type of Graph:");
             typeTitle.setBounds(110, 10, 90, 30);
-            graphType.setBounds(210, 10, 90, 20);
+            graphType.setBounds(210, 10, 200, 20);
             graphType.setEditable(false);
-            graphType.setText("Directed");
+            graphType.setText(graph.getGraphType());
         });
         // option 2 button
         // the user wanted to print the depth first search of graph
