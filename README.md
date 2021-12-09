@@ -17,3 +17,17 @@ ___
 
 ### Graph Representation
 Adjacency List is used for representing the graph in this project
+
+**Example:**
+
+Undirected unweighted graph
+
+A -> B -> C
+
+B -> A -> D
+
+C -> A -> D -> E
+
+D -> B -> C
+
+E -> C
