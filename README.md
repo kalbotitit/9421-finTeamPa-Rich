@@ -22,12 +22,12 @@ Adjacency List is used for representing the graph in this project
 
 Undirected unweighted graph
 
-A -> B -> C  -> null
+A = B -> C  -> null
 
-B -> A -> D  -> null
+B = A -> D  -> null
 
-C -> A -> D -> E  -> null
+C = A -> D -> E  -> null
 
-D -> B -> C  -> null
+D = B -> C  -> null
 
-E -> C  -> null
+E = C  -> null
