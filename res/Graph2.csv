@@ -1,7 +1,7 @@
-UNDIRECTED-UNWEIGHTED,,,
-A,B,E,
-B,A,D,E
-C,D,F,
-D,B,C,F
-E,A,B,
-F,C,D,
+UNDIRECTED-WEIGHTED,,,,,,
+A,B,2,E,3,,
+B,A,4,D,3,E,3
+C,D,5,F,2,,
+D,B,2,C,5,F,7
+E,A,6,B,8,,
+F,C,7,D,1,,
