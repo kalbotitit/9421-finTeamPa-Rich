@@ -14,3 +14,6 @@ ___
     Jacinto, Josef Luis
 
     Quedado, Reina May
+
+### Graph Representation
+Adjacency List is used for representing the graph in this project
