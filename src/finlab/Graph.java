@@ -14,75 +14,61 @@ public class Graph {
 
     }
 
-    Graph(File f){
+    Graph(File f) throws IOException {
         readCSV(f);
     }
 
-    public void readCSV(File f)  {
-        final int I = 0;
-        LinkedList<VertexEdge> list = new LinkedList<>();
-        VertexEdge ver = new VertexEdge();
+    public void readCSV(File f) throws IOException {
+        final int I = 0;        // constant index of element of every node
+        LinkedList<VertexEdge> list;
         char key;
         adjList.clear();
-        try (BufferedReader bfr = new BufferedReader(new FileReader(f))){
-            String line = bfr.readLine();
-            do{
-                if (line == null) break;
-                String[] parts = line.split(",");
-                if(line.contains("UN")) {
-                    undirectedGraph(bfr);
-                    graphType = parts[I];
-                    break;
-                } else if(line.contains("WEIGHTED")){
-                    graphType = line;
-                    continue;
-                }
+        BufferedReader bfr = new BufferedReader(new FileReader(f));
+        String line = bfr.readLine();
+        do{
+            if (line == null) break;
+            String[] parts = line.split(",");
+            graphType = parts[I];
+            if(line.contains("UN")) {
+                undirectedGraph(bfr);
+                break;
+            } else if(line.contains("WEIGHTED")){
+                graphType = line;
+                continue;
+            }
+            list = new LinkedList<>();
+            key = parts[0].charAt(0);
+            for (int i = 1; i < parts.length; i += 2){
+                list.add(new VertexEdge(parts[i].charAt(I), Integer.parseInt(parts[i+1])));
+            }
+            adjList.put(key, list);
+            line = bfr.readLine();
 
-                key = parts[0].charAt(0);
-                for (int i = 1; i < parts.length; i += 2){
-                    ver.setElement(parts[i].charAt(I));
-                    ver.setWeight(Integer.parseInt(parts[i+1]));
-                    list.add(ver);
-                }
+        }while(true);
 
-                adjList.put(key, list);
-                list.clear();
-                line = bfr.readLine();
-
-            }while(true);
-
-        } catch (IOException exception){
-            exception.printStackTrace();
-        }
     }
 
-    private void undirectedGraph(BufferedReader bfr){
-        // assign one to every edge of the graph
-        final int WEIGHT = 1;
-        final int I = 0;
-        LinkedList<VertexEdge> list = new LinkedList<>();
-        VertexEdge ver = new VertexEdge();
-        char key;
+    private void undirectedGraph(BufferedReader bfr) throws IOException {
+        final int WEIGHT = 1;   // assign 1 to every edge weight of the graph
+        final int I = 0;        // constant index of element of every node
+        LinkedList<VertexEdge> list;    // list of connected node to the base/starting node
+        char key;   // base/starting node
 
-
-        try {
             String line = bfr.readLine();
             while (line != null) {
 
-                String[] parts = line.split(";");
+                String[] parts = line.split(",");
+                // create a new list for every key
+                list = new LinkedList<>();
                 key = parts[0].charAt(I);
                 for (int i = 1; i < parts.length; i++) {
-                    ver.setElement(parts[i].charAt(I));
-                    ver.setWeight(WEIGHT);
-                    list.add(ver);
+                    char e = parts[i].charAt(I);
+                    list.add(new VertexEdge(e, WEIGHT));
+
                 }
                 adjList.put(key, list);
-                list.clear();
                 line = bfr.readLine();
             }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public String getGraphType(){

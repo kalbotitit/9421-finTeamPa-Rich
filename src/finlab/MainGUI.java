@@ -67,29 +67,34 @@ public class MainGUI {
         option1.setVisible(true);
         option1.setBounds(10, 50, 280, 30);
         option1.addActionListener(btn1 -> {
-            // filter the input file to only csv file
-            javax.swing.filechooser.FileFilter fileFilter = new FileFilter() {
-                @Override
-                public boolean accept(File f) {
-                    return f.isDirectory() || f.getName().endsWith(".csv");
-                }
+            try {
+                // filter the input file to only csv file
+                javax.swing.filechooser.FileFilter fileFilter = new FileFilter() {
+                    @Override
+                    public boolean accept(File f) {
+                        return f.isDirectory() || f.getName().endsWith(".csv");
+                    }
 
-                @Override
-                public String getDescription() {
-                    return "CSV Comma-delimited Value (.csv)";
+                    @Override
+                    public String getDescription() {
+                        return "CSV Comma-delimited Value (.csv)";
+                    }
+                };
+                fileChooser.setFileFilter(fileFilter);
+                int result = fileChooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION){
+                    file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                    graph.readCSV(file);
                 }
-            };
-            fileChooser.setFileFilter(fileFilter);
-            int result = fileChooser.showOpenDialog(null);
-            if (result == JFileChooser.APPROVE_OPTION){
-                file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-                graph.readCSV(file);
+                typeTitle.setText("Type of Graph:");
+                typeTitle.setBounds(110, 10, 90, 30);
+                graphType.setBounds(210, 10, 200, 20);
+                graphType.setEditable(false);
+                graphType.setText(graph.getGraphType());
+            } catch (Exception e){
+                e.printStackTrace();
             }
-            typeTitle.setText("Type of Graph:");
-            typeTitle.setBounds(110, 10, 90, 30);
-            graphType.setBounds(210, 10, 200, 20);
-            graphType.setEditable(false);
-            graphType.setText(graph.getGraphType());
+
         });
         // option 2 button
         // the user wanted to print the depth first search of graph
