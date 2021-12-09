@@ -4,7 +4,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 public class MainGUI {
 
@@ -68,6 +70,7 @@ public class MainGUI {
         option1.setBounds(10, 50, 280, 30);
         option1.addActionListener(btn1 -> {
             try {
+                BufferedReader bfr;
                 // filter the input file to only csv file
                 javax.swing.filechooser.FileFilter fileFilter = new FileFilter() {
                     @Override
@@ -84,7 +87,15 @@ public class MainGUI {
                 int result = fileChooser.showOpenDialog(null);
                 if (result == JFileChooser.APPROVE_OPTION){
                     file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-                    graph.readCSV(file);
+                }
+                bfr = new BufferedReader(new FileReader(file));
+                String line  = bfr.readLine();
+                if (line.contains("UNWEIGHTED")){
+                    graph.readUnWghtGraphCSV(bfr);
+                    graph.setGraphType(line.split(",")[0]);
+                } else if (line.contains("WEIGHTED")){
+                    graph.readWghtGraphCSV(bfr);
+                    graph.setGraphType(line.split(",")[0]);
                 }
                 typeTitle.setText("Type of Graph:");
                 typeTitle.setBounds(110, 10, 90, 30);
