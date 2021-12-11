@@ -19,8 +19,8 @@ public class MyStack<E>{
         Node<E> newNode = new Node<>();
         newNode.setElement(element);
         newNode.setNext(head);
+        newNode.setPrev(null);
         if (head == null){
-            head = newNode;
             tail = newNode;
         } else head = newNode;
         size++;
