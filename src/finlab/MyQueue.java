@@ -32,12 +32,13 @@ public class MyQueue<E> {
      * @param e element of new node
      */
     public void enqueue(E e){
-        Node<E> h = head;
-        Node<E> newNode = new Node<>(null, e, h);
-        head = newNode;
-        if (h == null){
-            tail = newNode;
-        } else h.setPrev(newNode);
+        Node<E> newNode = new Node<>();
+        newNode.setElement(e);
+        newNode.setPrev(tail);
+        newNode.setNext(null);
+        if (isEmpty()) head = newNode;
+        else tail.setNext(newNode);
+        tail = newNode;
         size++;
 
     }
