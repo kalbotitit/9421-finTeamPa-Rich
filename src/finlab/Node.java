@@ -8,13 +8,16 @@ public class Node<E> {
 
     private E element;
     private Node<E> next;
+    private Node<E> prev;
 
     Node(){}
 
-    Node(E e, Node<E> p){
+    Node(Node<E> p, E e, Node<E> n){
         element = e;
-        next = p;
+        next = n;
+        prev = p;
     }
+
     public E getElement() {
         return element;
     }
@@ -27,8 +30,15 @@ public class Node<E> {
         return next;
     }
 
-    public void setNext(Node<E> prev) {
-        this.next = prev;
+    public void setNext(Node<E> next) {
+        this.next = next;
     }
 
+    public Node<E> getPrev() {
+        return prev;
+    }
+
+    public void setPrev(Node<E> prev) {
+        this.prev = prev;
+    }
 }
