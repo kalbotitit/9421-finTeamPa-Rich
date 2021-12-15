@@ -115,7 +115,7 @@ public class Graph {
 
     }
 
-    private static class VertexEdge {
+    private class VertexEdge {
 
         char element;
         int weight;
@@ -126,7 +126,29 @@ public class Graph {
             this.element = e;
             this.weight = w;
         }
-
+        public String breadthFirstSearch(Character start) throws QueueNullException{
+            ArrayList<Character> arrayList = new ArrayList<>(){
+                public String toString(){
+                    StringBuilder string = new StringBuilder();
+                    for(Character character : this) string.append(" -> ").append(character);
+                    return string.toString();
+                }
+            };
+            MyQueue<Character> queue = new MyQueue<Character>();
+            queue.enqueue(start);
+            char key;
+            while(!queue.isEmpty()){
+                Character curr = queue.dequeue();
+                key = curr;
+                if(!arrayList.contains(curr))
+                    arrayList.add(curr);
+                for(int i = 0; i < adjList.get(key).size(); i++){
+                    if(!arrayList.contains(adjList.get(key).get(i).getElement()))
+                        queue.enqueue(adjList.get(key).get(i).getElement());
+                }
+            }
+            return arrayList.toString();
+        }
         public char getElement() {
             return element;
         }
