@@ -114,6 +114,31 @@ public class Graph {
     private void visitedVertex(){
 
     }
+    
+    public String dfs(Character start) throws StackUnderflowException{
+        ArrayList<Character> arrayList = new ArrayList<>(){
+            public String toString(){
+                StringBuilder string = new StringBuilder();
+                for(Character character : this) string.append(" -> ").append(character);
+                return string.toString();
+            }
+        };
+        MyStack<Character> stack = new MyStack<Character>();
+        stack.push(start);
+        char key;
+        while(!stack.isEmpty()){
+            Character curr = stack.pop();
+            key = curr;
+            if(!arrayList.contains(curr))
+                arrayList.add(curr);
+            for(int i = 0; i < adjList.get(key).size(); i++){
+                if(!arrayList.contains(adjList.get(key).get(i).getElement()))
+                    stack.push(adjList.get(key).get(i).getElement());
+            }
+        }
+        return arrayList.toString();
+    }
+
 
     private class VertexEdge {
 
