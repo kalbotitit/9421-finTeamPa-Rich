@@ -7,17 +7,23 @@ import java.util.*;
 public class Graph {
 
     private Map<Character, LinkedList<VertexEdge>> adjList;
-    private boolean directed;
+    private Map<Character, VertexEdge> pathCost;
     private String graphType;
 
     Graph(){
-
+        adjList = new HashMap<>();
+        pathCost = new HashMap<>();
     }
 
     Graph(BufferedReader bfr) throws IOException {
         readWghtGraphCSV(bfr);
     }
 
+    /**
+     * Read a csv file that contains the representation of both weighted directed and undirected graph
+     * @param bfr holds the csv file
+     * @throws IOException if there is an error in I0
+     */
     public void readWghtGraphCSV(BufferedReader bfr) throws IOException {
         final int I = 0;        // constant index of element of every node
         LinkedList<VertexEdge> list;
@@ -38,6 +44,11 @@ public class Graph {
 
     }
 
+    /**
+     * Read a csv file that contains the representation of both unweighted directed and undirected graph
+     * @param bfr holds the csv file
+     * @throws IOException if there is an error in I0
+     */
     public void readUnWghtGraphCSV(BufferedReader bfr) throws IOException {
         final int WEIGHT = 1;   // assign 1 to every edge weight of the graph
         final int I = 0;        // constant index of element of every node
@@ -61,60 +72,30 @@ public class Graph {
         System.out.println(adjList);
     }
 
-    public static void DijkstraShortestPath( int[][] graph, int source ) {
-        int count = graph.length;
-        boolean[] visitedVertex = new boolean[count];
-        int[] distance = new int[count];
-        for (int i = 0; i < count; i++) {
-            visitedVertex[i] = false;
-            distance[i] = Integer.MAX_VALUE;
-        }
-
-        // Distance of self loop is zero
-        distance[source] = 0;
-        for (int i = 0; i < count; i++) {
-
-            // Update the distance between neighbouring vertex and source vertex
-            int u = findMinDistance(distance, visitedVertex);
-            visitedVertex[u] = true;
-
-            // Update all the neighbouring vertex distances
-            for (int v = 0; v < count; v++) {
-                if (!visitedVertex[v] && graph[u][v] != 0 && (distance[u] + graph[u][v] < distance[v])) {
-                    distance[v] = distance[u] + graph[u][v];
-                }
+    public String breadthFirstSearch(Character start) throws QueueNullException{
+        ArrayList<Character> arrayList = new ArrayList<>(){
+            public String toString(){
+                StringBuilder string = new StringBuilder();
+                for(Character character : this) string.append(" -> ").append(character);
+                return string.toString();
+            }
+        };
+        MyQueue<Character> queue = new MyQueue<Character>();
+        queue.enqueue(start);
+        char key;
+        while(!queue.isEmpty()){
+            Character curr = queue.dequeue();
+            key = curr;
+            if(!arrayList.contains(curr))
+                arrayList.add(curr);
+            for(int i = 0; i < adjList.get(key).size(); i++){
+                if(!arrayList.contains(adjList.get(key).get(i).getElement()))
+                    queue.enqueue(adjList.get(key).get(i).getElement());
             }
         }
-        for (int i = 0; i < distance.length; i++) {
-            System.out.printf("Distance from %s to %s is %s%n", source, i, distance[i]);
-        }
+        return arrayList.toString();
     }
 
-    // Finding the minimum distance
-    private static int findMinDistance( int[] distance, boolean[] visitedVertex ) {
-        int minDistance = Integer.MAX_VALUE;
-        int minDistanceVertex = -1;
-        for (int i = 0; i < distance.length; i++) {
-            if (!visitedVertex[i] && distance[i] < minDistance) {
-                minDistance = distance[i];
-                minDistanceVertex = i;
-            }
-        }
-        return minDistanceVertex;
-    }
-
-    public String getGraphType(){
-        return graphType;
-    }
-
-    public void setGraphType(String graphType) {
-        this.graphType = graphType;
-    }
-
-    private void visitedVertex(){
-
-    }
-    
     public String dfs(Character start) throws StackUnderflowException{
         ArrayList<Character> arrayList = new ArrayList<>(){
             public String toString(){
@@ -139,8 +120,72 @@ public class Graph {
         return arrayList.toString();
     }
 
+    private void generatePathCost(Character start){
+        List<Character> seenVertex = new ArrayList<>();
+        Queue<VertexEdge> queue = new PriorityQueue<>();
+        /*
+            initialize the previous vertex to empty and make the cost to large number
 
-    private class VertexEdge {
+            for this instance, in VertexEdge, the char element will be treated as the previous vertex
+            and for int weight is the cost of travel
+         */
+        for(Character d: adjList.keySet())
+            pathCost.put(d, new VertexEdge('\0', Integer.MAX_VALUE));
+
+        // make the cost of start vertex to zero
+        pathCost.put(start, new VertexEdge(start, 0));
+        seenVertex.add(start);
+        char key = start;
+
+        while (!queue.isEmpty()){
+            queue.addAll(adjList.get(key));
+            int i = 0;
+            for (Map.Entry<Character, LinkedList<VertexEdge>> entry: adjList.entrySet()){
+
+                if (entry.getValue().get(i++) == queue.peek()){
+
+                    if (!seenVertex.contains(queue.peek().getElement())) {
+
+                        seenVertex.add(queue.peek().getElement());
+                        Character prevVertex = entry.getKey();
+                        int weightVertex = pathCost.get(prevVertex).getWeight();
+                        pathCost.put(key, new VertexEdge(prevVertex, weightVertex + queue.peek().weight));
+                        break;
+
+                    } // end second if
+
+                } // end first if
+
+            }// end for loop
+            key = queue.poll().getElement();
+        }
+    } // end pathCode method
+
+    public String shortestPath(Character start, Character end){
+        generatePathCost(start);
+        StringBuilder path = new StringBuilder();
+        int cost;
+        char key = end;
+        for (int i = 0; i < pathCost.size(); i++){
+            if (key == start) break;
+            if (key == end) cost = pathCost.get(key).getWeight();
+            path.append(" -> ").append(key);
+            key = pathCost.get(key).getElement();
+        }
+        path.reverse();
+        return path.toString();
+    }
+
+    public String getGraphType(){
+        return graphType;
+    }
+
+    public void setGraphType(String graphType) {
+        this.graphType = graphType;
+    }
+
+
+    private static class VertexEdge implements Comparable<VertexEdge>{
 
         char element;
         int weight;
@@ -151,29 +196,8 @@ public class Graph {
             this.element = e;
             this.weight = w;
         }
-        public String breadthFirstSearch(Character start) throws QueueNullException{
-            ArrayList<Character> arrayList = new ArrayList<>(){
-                public String toString(){
-                    StringBuilder string = new StringBuilder();
-                    for(Character character : this) string.append(" -> ").append(character);
-                    return string.toString();
-                }
-            };
-            MyQueue<Character> queue = new MyQueue<Character>();
-            queue.enqueue(start);
-            char key;
-            while(!queue.isEmpty()){
-                Character curr = queue.dequeue();
-                key = curr;
-                if(!arrayList.contains(curr))
-                    arrayList.add(curr);
-                for(int i = 0; i < adjList.get(key).size(); i++){
-                    if(!arrayList.contains(adjList.get(key).get(i).getElement()))
-                        queue.enqueue(adjList.get(key).get(i).getElement());
-                }
-            }
-            return arrayList.toString();
-        }
+
+
         public char getElement() {
             return element;
         }
@@ -193,6 +217,13 @@ public class Graph {
         @Override
         public String toString(){
             return "(" + element + "," + weight + ")";
+        }
+
+        @Override
+        public int compareTo(VertexEdge o) {
+            if (weight < o.weight) return -1;
+            else if (weight > o.weight) return 1;
+            return 0;
         }
     }
 
