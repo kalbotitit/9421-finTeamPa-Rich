@@ -37,7 +37,7 @@ public class MainGUI {
     private JLabel startTitle = new JLabel();         // title of text area for starting vertex
     private JLabel endTitle = new JLabel();           // title of text area for ending vertex (opt 4 only)
     private JLabel typeTitle = new JLabel();
-    // text are to put the input starting vertex for options 2 - 4
+    // text area to put the input starting vertex for options 2 - 4
     private JTextArea startingVertex = new JTextArea();     // for opt 2 & 3
     private JTextArea endingVertex = new JTextArea();       // for option 4
     private JTextArea graphType = new JTextArea();          // display the type of graph of the loaded file
@@ -112,20 +112,15 @@ public class MainGUI {
         option2.setText("Perform Depth First Traversal");
         option2.setVisible(true);
         option2.setBounds(10, 90, 280, 30);
-        option2.addActionListener(btn2 -> {
-            // set the position of input components
-            opt23InComponents();
-        });
+        dfsBFS(graph, option2);
+
 
         // option 3 button
         // the user wanted to print the breadth first search of graph
         option3.setText("Perform Breadth First Traversal");
         option3.setVisible(true);
         option3.setBounds(10, 130, 280, 30);
-        option3.addActionListener(btn3 -> {
-            // set the position of input components
-            opt23InComponents();
-        });
+        dfsBFS(graph, option3);
 
         // option 4 button
         // the user wanted to print the shortest path from point a to b
@@ -184,6 +179,22 @@ public class MainGUI {
 
         // add components for output panel
         for (var components : outComponents) outputPanel.add(components);
+    }
+
+    private void dfsBFS(Graph graph, JButton option) {
+        option.addActionListener(btn -> {
+            // set the position of input components
+            opt23InComponents();
+            result.addActionListener( res -> {
+                try {
+                    Character start = startingVertex.getText().charAt(0);
+                    String result = graph.dfs(start);
+                    outDisplay.setText(result);
+                } catch (Exception e){
+
+                }
+            });
+        });
     }
 
     private void opt23InComponents(){
