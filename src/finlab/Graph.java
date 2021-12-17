@@ -7,12 +7,10 @@ import java.util.*;
 public class Graph {
 
     private Map<Character, LinkedList<VertexEdge>> adjList;
-    private Map<Character, VertexEdge> pathCost;
     private String graphType;
 
     Graph(){
         adjList = new HashMap<>();
-        pathCost = new HashMap<>();
     }
 
     Graph(BufferedReader bfr) throws IOException {
@@ -35,12 +33,11 @@ public class Graph {
             list = new LinkedList<>();
             key = parts[0].charAt(0);
             for (int i = 1; i < parts.length; i += 2) {
-                list.add(new VertexEdge(parts[i].charAt(I), Integer.parseInt(parts[i + 1])));
+                list.add(new VertexEdge(key, parts[i].charAt(I), Integer.parseInt(parts[i + 1])));
             }
             adjList.put(key, list);
             line = bfr.readLine();
         }
-        System.out.println(adjList);
 
     }
 
@@ -64,12 +61,11 @@ public class Graph {
             key = parts[0].charAt(I);
             for (int i = 1; i < parts.length; i++) {
                 char e = parts[i].charAt(I);
-                list.add(new VertexEdge(e, WEIGHT));
+                list.add(new VertexEdge(key, e, WEIGHT));
             }
             adjList.put(key, list);
             line = bfr.readLine();
         }
-        System.out.println(adjList);
     }
 
     public String breadthFirstSearch(Character start) throws QueueNullException{
@@ -100,7 +96,7 @@ public class Graph {
         ArrayList<Character> arrayList = new ArrayList<>(){
             public String toString(){
                 StringBuilder string = new StringBuilder();
-                for(Character character : this) string.append(" -> ").append(character);
+                for(Character character : this) string.append(character).append(", ");
                 return string.toString();
             }
         };
@@ -120,60 +116,80 @@ public class Graph {
         return arrayList.toString();
     }
 
-    private void generatePathCost(Character start){
-        List<Character> seenVertex = new ArrayList<>();
-        Queue<VertexEdge> queue = new PriorityQueue<>();
-        /*
-            initialize the previous vertex to empty and make the cost to large number
-
-            for this instance, in VertexEdge, the char element will be treated as the previous vertex
-            and for int weight is the cost of travel
-         */
-        for(Character d: adjList.keySet())
-            pathCost.put(d, new VertexEdge('\0', Integer.MAX_VALUE));
-
-        // make the cost of start vertex to zero
-        pathCost.put(start, new VertexEdge(start, 0));
-        seenVertex.add(start);
-        char key = start;
-
-        while (!queue.isEmpty()){
-            queue.addAll(adjList.get(key));
-            int i = 0;
-            for (Map.Entry<Character, LinkedList<VertexEdge>> entry: adjList.entrySet()){
-
-                if (entry.getValue().get(i++) == queue.peek()){
-
-                    if (!seenVertex.contains(queue.peek().getElement())) {
-
-                        seenVertex.add(queue.peek().getElement());
-                        Character prevVertex = entry.getKey();
-                        int weightVertex = pathCost.get(prevVertex).getWeight();
-                        pathCost.put(key, new VertexEdge(prevVertex, weightVertex + queue.peek().weight));
-                        break;
-
-                    } // end second if
-
-                } // end first if
-
-            }// end for loop
-            key = queue.poll().getElement();
-        }
-    } // end pathCode method
-
     public String shortestPath(Character start, Character end){
-        generatePathCost(start);
+        Map<Character, VertexEdge> pathCost = new HashMap<>();
+        pathCost = generatePathCost(start);
+        Character[] vertices = getVertices(pathCost);
+        VertexEdge[] prevCost = getPrevCost(pathCost);
         StringBuilder path = new StringBuilder();
-        int cost;
+        int cost =0;
         char key = end;
-        for (int i = 0; i < pathCost.size(); i++){
-            if (key == start) break;
-            if (key == end) cost = pathCost.get(key).getWeight();
-            path.append(" -> ").append(key);
-            key = pathCost.get(key).getElement();
+        for (int i = 0; i < vertices.length; i++){
+            if (key == start){
+                path.append(key).append(" >- ");
+                break;
+            }
+            if (key == end) cost = prevCost[indexOf(end, pathCost)].getWeight();
+            path.append(key).append(" >- ");
+            key = prevCost[i].getPrev();
         }
+        path.append(cost);
         path.reverse();
         return path.toString();
+    }
+
+    private Map<Character, VertexEdge> generatePathCost(Character start){
+        Map<Character, VertexEdge> pathCost = new HashMap<>();
+        List<Character> seenVertex = new ArrayList<>();
+        Queue<VertexEdge> queue = new PriorityQueue<>();
+        Object[] vertices = adjList.keySet().toArray();
+        for (int i = 0; i < vertices.length; i++)
+            pathCost.put((Character) vertices[i], new VertexEdge('\0', Integer.MAX_VALUE));
+
+        // make the cost of start vertex to zero
+        pathCost.put(start, new VertexEdge('\0', 0));
+        seenVertex.add(start);
+        char key = start, prev;
+        queue.addAll(adjList.get(key));
+
+        while (!queue.isEmpty()){
+            if (!seenVertex.contains(queue.peek().getElement())){
+                seenVertex.add(queue.peek().getElement());
+                key = queue.peek().getElement();
+                prev = queue.peek().getPrev();
+                int cost = pathCost.get(prev).getWeight() + queue.peek().getWeight();
+                pathCost.put(key, new VertexEdge(prev, cost));
+            }
+            queue.poll();
+        }
+        return pathCost;
+    } // end pathCost method
+
+    private Character[] getVertices(Map<Character, VertexEdge> pc){
+        Object[] v = pc.keySet().toArray();
+        Character[] vs = new Character[v.length];
+        for (int i = 0; i < v.length; i++){
+            vs[i] = (Character) v[i];
+        }
+        return vs;
+    }
+
+    private VertexEdge[] getPrevCost(Map<Character, VertexEdge> pc){
+        Object[] v = pc.keySet().toArray();
+        VertexEdge[] prevCost = new VertexEdge[v.length];
+        for (int i = 0; i < v.length; i++){
+            char key = (char) v[i];
+            prevCost[i] = pc.get(key);
+        }
+        return prevCost;
+    }
+
+    private int indexOf(Character s, Map<Character, VertexEdge> pc){
+        Object[] v = pc.keySet().toArray();
+        for (int i = 0; i < v.length; i++){
+            if (v[i] == s) return i;
+        }
+        return -1;
     }
 
     public String getGraphType(){
@@ -187,12 +203,23 @@ public class Graph {
 
     private static class VertexEdge implements Comparable<VertexEdge>{
 
-        char element;
-        int weight;
+        private char prev;
+        private char element;
+        private int weight;
 
-        VertexEdge(){}
+        VertexEdge(){
+            prev = 'A';
+            element = 'B';
+            weight = 1;
+        }
 
-        VertexEdge(char e, int w){
+        VertexEdge(char p, int w){
+            this.prev = p;
+            this.weight = w;
+        }
+
+        VertexEdge(char p, char e, int w){
+            this.prev = p;
             this.element = e;
             this.weight = w;
         }
@@ -214,17 +241,35 @@ public class Graph {
             this.weight = weight;
         }
 
-        @Override
-        public String toString(){
-            return "(" + element + "," + weight + ")";
+        public char getPrev() {
+            return prev;
+        }
+
+        public void setPrev(char prev) {
+            this.prev = prev;
         }
 
         @Override
-        public int compareTo(VertexEdge o) {
-            if (weight < o.weight) return -1;
-            else if (weight > o.weight) return 1;
+        public int compareTo(VertexEdge pc){
+            if (weight < pc.weight) return -1;
+            else if (weight > pc.weight) return 1;
             return 0;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            VertexEdge that = (VertexEdge) o;
+            return prev == that.prev && element == that.element && weight == that.weight;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(prev, element, weight);
+        }
     }
+
+
 
 }
