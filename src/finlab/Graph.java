@@ -72,7 +72,7 @@ public class Graph {
         ArrayList<Character> arrayList = new ArrayList<>(){
             public String toString(){
                 StringBuilder string = new StringBuilder();
-                for(Character character : this) string.append(" -> ").append(character);
+                for(Character character : this) string.append(", ").append(character);
                 return string.toString();
             }
         };
@@ -84,7 +84,8 @@ public class Graph {
             key = curr;
             if(!arrayList.contains(curr))
                 arrayList.add(curr);
-            for(int i = 0; i < adjList.get(key).size(); i++){
+            int n = adjList.get(key).size();
+            for(int i = 0; i < n; i++){
                 if(!arrayList.contains(adjList.get(key).get(i).getElement()))
                     queue.enqueue(adjList.get(key).get(i).getElement());
             }
@@ -92,7 +93,7 @@ public class Graph {
         return arrayList.toString();
     }
 
-    public String dfs(Character start) throws StackUnderflowException{
+    public String depthFS(Character start) throws StackUnderflowException{
         ArrayList<Character> arrayList = new ArrayList<>(){
             public String toString(){
                 StringBuilder string = new StringBuilder();
