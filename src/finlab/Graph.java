@@ -4,6 +4,13 @@ package finlab;
 import java.io.*;
 import java.util.*;
 
+/**
+ * {@code Graph} class read csv file that contains the representation for a graph.
+ * Adjacency list is used for representing the graph. Graph can be undirected or directed and unweighted or weighted.
+ *
+ * <p>Character is used for the vertices.
+ * Hashmap for storing the representation of graph from the csv file.</p>
+ */
 public class Graph {
 
     private Map<Character, LinkedList<VertexEdge>> adjList;
@@ -68,6 +75,12 @@ public class Graph {
         }
     }
 
+    /**
+     * Return the path of breadth first search result from the source vertex
+     * @param start source vertex
+     * @return path of breadth first search result from the source vertex
+     * @throws QueueNullException when the queue is null
+     */
     public String breadthFirstSearch(Character start) throws QueueNullException{
         isVertex(start);
         ArrayList<Character> arrayList = new ArrayList<>(){
@@ -94,6 +107,12 @@ public class Graph {
         return arrayList.toString();
     }
 
+    /**
+     * Return the path of depth first search result from the source vertex
+     * @param start source vertex
+     * @return path of depth first search result from the source vertex
+     * @throws StackUnderflowException when the queue is null
+     */
     public String depthFS(Character start) throws StackUnderflowException{
         isVertex(start);
         ArrayList<Character> arrayList = new ArrayList<>(){
@@ -119,12 +138,18 @@ public class Graph {
         return arrayList.toString();
     }
 
+    /**
+     * Return the shortest path from the source vertex to end vertex
+     * @param start source vertex
+     * @param end target vertex
+     * @return shortest path from the source vertex to end vertex
+     */
     public List<String> shortestPath(Character start, Character end){
         isVertex(start);
         isVertex(end);
-        List<String> result = new ArrayList<>();
-        Map<Character, VertexEdge> pathCost;
-        pathCost = generatePathCost(start);
+        List<String> result = new ArrayList<>(); // both the path and cost
+        Map<Character, VertexEdge> pathCost; // map for path cost table
+        pathCost = generatePathCostTable(start);
         StringBuilder path = new StringBuilder();
         int cost =0;
         char key = end;
@@ -133,7 +158,7 @@ public class Graph {
                 path.append(key).append(" >-");
                 break;
             }
-            if (key == end) cost = pathCost.get(key).weight;
+            if (key == end) cost = pathCost.get(key).weight; // get the total cost of traversal
             path.append(key).append(" >- ");
             key = pathCost.get(key).prev;
         }
@@ -143,7 +168,12 @@ public class Graph {
         return result;
     }
 
-    private Map<Character, VertexEdge> generatePathCost(Character start){
+    /**
+     * Return map of path cost table from source vertex to all vertices
+     * @param start source vertex
+     * @return map of path cost table from source vertex to all vertices
+     */
+    private Map<Character, VertexEdge> generatePathCostTable(Character start){
         Map<Character, VertexEdge> pathCost = new HashMap<>();
         List<Character> seenVertex = new ArrayList<>();
         Queue<VertexEdge> queue = new PriorityQueue<>();
@@ -172,7 +202,12 @@ public class Graph {
         return pathCost;
     } // end pathCost method
 
-    private void isVertex(Character s){
+    /**
+     * Check the input if it is in the list of vertices
+     * @param s input
+     * @throws InputMismatchException when input is not the list of vertices
+     */
+    private void isVertex(Character s) throws InputMismatchException{
         Object[] vertices = adjList.keySet().toArray();
         for (Object v : vertices){
             if (v.equals(s))
@@ -181,6 +216,10 @@ public class Graph {
         throw new InputMismatchException();
     }
 
+    /**
+     * Return the content of the csv file for unweighted graph
+     * @return the content of the csv file
+     */
     public String contentUnWght(){
         StringBuilder sb = new StringBuilder();
         Object[] vertex = adjList.keySet().toArray();
@@ -194,6 +233,10 @@ public class Graph {
         return sb.toString();
     }
 
+    /**
+     * Return the content of the csv file for weighted graph
+     * @return the content of the csv file
+     */
     public String contentWght(){
         StringBuilder sb = new StringBuilder();
         Object[] vertex = adjList.keySet().toArray();
@@ -207,11 +250,18 @@ public class Graph {
         return sb.toString();
     }
 
-
+    /**
+     * Return the type of graph loaded
+     * @return the type of graph loaded
+     */
     public String getGraphType(){
         return graphType;
     }
 
+    /**
+     * Set the type of the graph loaded
+     * @param graphType ype of the graph loaded
+     */
     public void setGraphType(String graphType) {
         this.graphType = graphType;
     }
@@ -277,18 +327,6 @@ public class Graph {
             return 0;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            VertexEdge that = (VertexEdge) o;
-            return prev == that.prev && element == that.element && weight == that.weight;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(prev, element, weight);
-        }
     }
 
 
