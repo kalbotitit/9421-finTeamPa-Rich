@@ -7,6 +7,8 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.InputMismatchException;
+import java.util.List;
 
 public class MainGUI {
 
@@ -29,8 +31,10 @@ public class MainGUI {
 
     // title for output panel
     private JLabel outTitle = new JLabel();
+    private JLabel content = new JLabel();
     // text area where output will be displayed
     private JTextArea outDisplay = new JTextArea();
+    private JTextArea contentDisplay = new JTextArea();
 
     // title for input panel
     private JLabel inTitle = new JLabel();
@@ -42,11 +46,13 @@ public class MainGUI {
     private JTextArea endingVertex = new JTextArea();       // for option 4
     private JTextArea graphType = new JTextArea();          // display the type of graph of the loaded file
     // button to start analyze and print the result and output
-    private JButton result = new JButton();
+    private JButton result1 = new JButton(); // result button for depth first search
+    private JButton result2 = new JButton(); // result button for breadth first search
+    private JButton result3 = new JButton(); // result button for shortest path
 
     private JComponent[] menuComponents = {option1, option2, option3, option4, option5, menuTitle};
-    private JComponent[] outComponents = {outTitle, outDisplay};
-    private JComponent[] inComponents = {inTitle, startTitle, endTitle, typeTitle, startingVertex, endingVertex, graphType, result};
+    private JComponent[] outComponents = {outTitle, outDisplay, content, contentDisplay};
+    private JComponent[] inComponents = {inTitle, startTitle, endTitle, typeTitle, startingVertex, endingVertex, graphType, result1, result2, result3};
 
     private File file;
 
@@ -70,6 +76,7 @@ public class MainGUI {
         option1.setBounds(10, 50, 280, 30);
         option1.addActionListener(btn1 -> {
             try {
+
                 BufferedReader bfr;
                 // filter the input file to only csv file
                 javax.swing.filechooser.FileFilter fileFilter = new FileFilter() {
@@ -93,9 +100,11 @@ public class MainGUI {
                 if (line.contains("UNWEIGHTED")){
                     graph.readUnWghtGraphCSV(bfr);
                     graph.setGraphType(line.split(",")[0]);
+                    contentDisplay.setText(graph.contentUnWght());
                 } else if (line.contains("WEIGHTED")){
                     graph.readWghtGraphCSV(bfr);
                     graph.setGraphType(line.split(",")[0]);
+                    contentDisplay.setText(graph.contentWght());
                 }
                 typeTitle.setText("Type of Graph:");
                 typeTitle.setBounds(110, 10, 90, 30);
@@ -112,7 +121,32 @@ public class MainGUI {
         option2.setText("Perform Depth First Traversal");
         option2.setVisible(true);
         option2.setBounds(10, 90, 280, 30);
-        dfsBFS(graph, option2);
+        option2.addActionListener( btn2 -> {
+            checkFile();
+            // set the position of input components
+            opt23InComponents(result1);
+            outDisplay.setText("");
+            result1.addActionListener(res -> {
+                try {
+                    inputLimit(startingVertex.getText().length());
+                    Character start = startingVertex.getText().charAt(0);
+                    String result = graph.depthFS(start);
+                    outDisplay.setText(result);
+                } catch (InputMismatchException e){
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "Wrong input (vertex)",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                } catch (IndexOutOfBoundsException e){
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "Input should only be one character",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            });
+        });
 
 
         // option 3 button
@@ -120,7 +154,38 @@ public class MainGUI {
         option3.setText("Perform Breadth First Traversal");
         option3.setVisible(true);
         option3.setBounds(10, 130, 280, 30);
-        dfsBFS(graph, option3);
+        option3.addActionListener(btn3 ->{
+            checkFile();
+            // set the position of input components
+            opt23InComponents(result2);
+            outDisplay.setText("");
+            result2.addActionListener(res -> {
+                try {
+                    inputLimit(startingVertex.getText().length());
+                    Character start = startingVertex.getText().charAt(0);
+                    String result = graph.breadthFirstSearch(start);
+                    outDisplay.setText(result);
+                } catch (InputMismatchException e){
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "Wrong input (vertex)",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                } catch (QueueNullException e1){
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "Queue is null",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                } catch (IndexOutOfBoundsException e){
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "Input should only be one character",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            });
+        });
 
         // option 4 button
         // the user wanted to print the shortest path from point a to b
@@ -128,8 +193,40 @@ public class MainGUI {
         option4.setVisible(true);
         option4.setBounds(10, 170, 280, 30);
         option4.addActionListener(btn4 -> {
+            checkFile();
             // set the position of input components
             opt4InComponents();
+            result3.addActionListener(res ->{
+                try {
+                    inputLimit(startingVertex.getText().length());
+                    inputLimit(endingVertex.getText().length());
+                    Character start = startingVertex.getText().charAt(0);
+                    Character end = endingVertex.getText().charAt(0);
+                    List<String> result = graph.shortestPath(start, end);
+                    String path = result.get(0);
+                    int cost = Integer.parseInt(result.get(1));
+                    outDisplay.setText(String.format("The path from %c to %c is %s\n The cost of traversal is %d", start, end, path, cost));
+                } catch (InputMismatchException e){ // one or both the input is not a vertex
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "The input is not a vertex",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                } catch (NullPointerException e){ // if there is no possible path for the given input
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "There is no path from " + startingVertex.getText().charAt(0) + " to " + endingVertex.getText().charAt(0),
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                } catch (IndexOutOfBoundsException e){
+                    // display message for the user
+                    JOptionPane.showMessageDialog(null,
+                            "Input should only be one character",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+
+            });
         });
         // option 5 button
         // the user wanted to print the depth first search of graph
@@ -163,8 +260,14 @@ public class MainGUI {
         outTitle.setText("OUTPUT");
         outTitle.setBounds(10, 10, 50, 30);
 
-        outDisplay.setBounds(10, 50, 550, 120);
+        outDisplay.setBounds(10, 50, 250, 200);
         outDisplay.setEditable(false);
+
+        // title for content
+        content.setText("CONTENT");
+        content.setBounds(270, 10, 100, 30);
+        contentDisplay.setBounds(270, 50, 300, 200);
+        contentDisplay.setEditable(false);
 
         outputPanel.setVisible(true);
         outputPanel.setBorder(border);
@@ -181,23 +284,7 @@ public class MainGUI {
         for (var components : outComponents) outputPanel.add(components);
     }
 
-    private void dfsBFS(Graph graph, JButton option) {
-        option.addActionListener(btn -> {
-            // set the position of input components
-            opt23InComponents();
-            result.addActionListener( res -> {
-                try {
-                    Character start = startingVertex.getText().charAt(0);
-                    String result = graph.dfs(start);
-                    outDisplay.setText(result);
-                } catch (Exception e){
-
-                }
-            });
-        });
-    }
-
-    private void opt23InComponents(){
+    private void opt23InComponents(JButton result){
         // label for starting vertex text area
         startTitle.setText("Starting Vertex:");
         startTitle.setBounds(10, 40, 90, 30);
@@ -205,10 +292,12 @@ public class MainGUI {
         // of depth first and breadth first search
         startingVertex.setBounds(105, 40, 100, 20);
         startingVertex.setVisible(true);
+        startingVertex.setText("");
         // button to start analyzing and displaying the results/output
         result.setVisible(true);
         result.setText("Result");
         result.setBounds(220, 40, 90, 30);
+        result3.setVisible(false);
 
         endTitle.setVisible(false);
         endingVertex.setVisible(false);
@@ -231,9 +320,25 @@ public class MainGUI {
         endingVertex.setBounds(315, 40, 100, 20);
         endingVertex.setVisible(true);
         // button to start analyzing and displaying the results/output
-        result.setVisible(true);
-        result.setText("Result");
-        result.setBounds(425, 40, 90, 30);
+        result3.setVisible(true);
+        result3.setText("Result");
+        result3.setBounds(425, 40, 90, 30);
+        result1.setVisible(false);
+        result2.setVisible(false);
+    }
+
+    private void checkFile(){
+        if (file == null){
+            // display message for the user
+            JOptionPane.showMessageDialog(null,
+                    "There is no file loaded",
+                    "No File",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void inputLimit(int i){
+        if (i > 1) throw new IndexOutOfBoundsException();
     }
 
     private JPanel getMenuPanel(){

@@ -69,6 +69,7 @@ public class Graph {
     }
 
     public String breadthFirstSearch(Character start) throws QueueNullException{
+        isVertex(start);
         ArrayList<Character> arrayList = new ArrayList<>(){
             public String toString(){
                 StringBuilder string = new StringBuilder();
@@ -94,6 +95,7 @@ public class Graph {
     }
 
     public String depthFS(Character start) throws StackUnderflowException{
+        isVertex(start);
         ArrayList<Character> arrayList = new ArrayList<>(){
             public String toString(){
                 StringBuilder string = new StringBuilder();
@@ -117,8 +119,11 @@ public class Graph {
         return arrayList.toString();
     }
 
-    public String shortestPath(Character start, Character end){
-        Map<Character, VertexEdge> pathCost = new HashMap<>();
+    public List<String> shortestPath(Character start, Character end){
+        isVertex(start);
+        isVertex(end);
+        List<String> result = new ArrayList<>();
+        Map<Character, VertexEdge> pathCost;
         pathCost = generatePathCost(start);
         StringBuilder path = new StringBuilder();
         int cost =0;
@@ -132,9 +137,10 @@ public class Graph {
             path.append(key).append(" >- ");
             key = pathCost.get(key).prev;
         }
-        path.append(cost);
         path.reverse();
-        return path.toString();
+        result.add(path.toString());
+        result.add(String.valueOf(cost));
+        return result;
     }
 
     private Map<Character, VertexEdge> generatePathCost(Character start){
@@ -166,6 +172,42 @@ public class Graph {
         return pathCost;
     } // end pathCost method
 
+    private void isVertex(Character s){
+        Object[] vertices = adjList.keySet().toArray();
+        for (Object v : vertices){
+            if (v.equals(s))
+                return;
+        }
+        throw new InputMismatchException();
+    }
+
+    public String contentUnWght(){
+        StringBuilder sb = new StringBuilder();
+        Object[] vertex = adjList.keySet().toArray();
+        for (Object v : vertex){
+            sb.append(v).append(" -> ");
+            for (int i =0; i < adjList.get(v).size(); i++){
+                sb.append(adjList.get(v).get(i).element).append(", ");
+            }
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
+    public String contentWght(){
+        StringBuilder sb = new StringBuilder();
+        Object[] vertex = adjList.keySet().toArray();
+        for (Object v : vertex){
+            sb.append(v).append(" -> ");
+            for (int i =0; i < adjList.get(v).size(); i++){
+                sb.append(adjList.get(v).get(i).element).append(adjList.get(v).get(i).weight).append(", ");
+            }
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
+
     public String getGraphType(){
         return graphType;
     }
@@ -173,6 +215,7 @@ public class Graph {
     public void setGraphType(String graphType) {
         this.graphType = graphType;
     }
+
 
 
     private static class VertexEdge implements Comparable<VertexEdge>{
