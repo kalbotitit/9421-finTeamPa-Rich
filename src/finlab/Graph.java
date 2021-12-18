@@ -149,18 +149,20 @@ public class Graph {
         // make the cost of start vertex to zero
         pathCost.put(start, new VertexEdge('\0', 0));
         seenVertex.add(start);
-        char key = start, prev;
-        queue.addAll(adjList.get(key));
+        VertexEdge key = new VertexEdge();
+        char prev;
+        queue.addAll(adjList.get(start));
 
         while (!queue.isEmpty()){
-            if (!seenVertex.contains(queue.peek().getElement())){
-                seenVertex.add(queue.peek().getElement());
-                key = queue.peek().getElement();
-                prev = queue.peek().getPrev();
-                int cost = pathCost.get(prev).getWeight() + queue.peek().getWeight();
-                pathCost.put(key, new VertexEdge(prev, cost));
+            key = queue.poll();
+            if (!seenVertex.contains(key.element)){
+                seenVertex.add(key.element);
+                prev = key.prev;
+                int cost = pathCost.get(prev).getWeight() + key.weight;
+                pathCost.put(key.element, new VertexEdge(prev, cost));
+                queue.addAll(adjList.get(key.element));
             }
-            queue.poll();
+
         }
         return pathCost;
     } // end pathCost method
@@ -247,6 +249,10 @@ public class Graph {
 
         public void setPrev(char prev) {
             this.prev = prev;
+        }
+        @Override
+        public String toString(){
+            return (prev + " " + element + " " + weight);
         }
 
         @Override
