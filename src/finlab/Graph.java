@@ -119,19 +119,17 @@ public class Graph {
     public String shortestPath(Character start, Character end){
         Map<Character, VertexEdge> pathCost = new HashMap<>();
         pathCost = generatePathCost(start);
-        Character[] vertices = getVertices(pathCost);
-        VertexEdge[] prevCost = getPrevCost(pathCost);
         StringBuilder path = new StringBuilder();
         int cost =0;
         char key = end;
-        for (int i = 0; i < vertices.length; i++){
+        for (int i = 0; i < pathCost.size(); i++){
             if (key == start){
-                path.append(key).append(" >- ");
+                path.append(key).append(" >-");
                 break;
             }
-            if (key == end) cost = prevCost[indexOf(end, pathCost)].getWeight();
+            if (key == end) cost = pathCost.get(key).weight;
             path.append(key).append(" >- ");
-            key = prevCost[i].getPrev();
+            key = pathCost.get(key).prev;
         }
         path.append(cost);
         path.reverse();
@@ -155,10 +153,10 @@ public class Graph {
 
         while (!queue.isEmpty()){
             key = queue.poll();
-            if (!seenVertex.contains(key.element)){
-                seenVertex.add(key.element);
-                prev = key.prev;
-                int cost = pathCost.get(prev).getWeight() + key.weight;
+            prev = key.prev;
+            int currCost = pathCost.get(key.element).weight;
+            int cost = pathCost.get(prev).getWeight() + key.weight;
+            if (cost < currCost) {
                 pathCost.put(key.element, new VertexEdge(prev, cost));
                 queue.addAll(adjList.get(key.element));
             }
@@ -166,33 +164,6 @@ public class Graph {
         }
         return pathCost;
     } // end pathCost method
-
-    private Character[] getVertices(Map<Character, VertexEdge> pc){
-        Object[] v = pc.keySet().toArray();
-        Character[] vs = new Character[v.length];
-        for (int i = 0; i < v.length; i++){
-            vs[i] = (Character) v[i];
-        }
-        return vs;
-    }
-
-    private VertexEdge[] getPrevCost(Map<Character, VertexEdge> pc){
-        Object[] v = pc.keySet().toArray();
-        VertexEdge[] prevCost = new VertexEdge[v.length];
-        for (int i = 0; i < v.length; i++){
-            char key = (char) v[i];
-            prevCost[i] = pc.get(key);
-        }
-        return prevCost;
-    }
-
-    private int indexOf(Character s, Map<Character, VertexEdge> pc){
-        Object[] v = pc.keySet().toArray();
-        for (int i = 0; i < v.length; i++){
-            if (v[i] == s) return i;
-        }
-        return -1;
-    }
 
     public String getGraphType(){
         return graphType;
