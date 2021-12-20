@@ -144,6 +144,21 @@ public class Graph {
      * @param end target vertex
      * @return shortest path from the source vertex to end vertex
      */
+    /*
+        Algorithm:
+            shortestPath(start, end)
+                Generate path cost table
+                vertex <- end
+                For all vertices in path cost table
+                    If key is equal to start
+                        result <- add vertex
+                        End the loop
+                    If key is equal to end
+                        cost <- vertex cost in path cost table
+                    result <- add vertex
+                    Update vertex of the previous vertex of current vertex
+                Reverse the result
+    */
     public List<String> shortestPath(Character start, Character end){
         isVertex(start);
         isVertex(end);
