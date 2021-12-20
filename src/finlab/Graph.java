@@ -29,6 +29,20 @@ public class Graph {
      * @param bfr holds the csv file
      * @throws IOException if there is an error in I0
      */
+    /*
+        Algorithm:
+            read weighted graph csv (file)
+                Initialize list for adjacent vertices
+                Initialize hashmap for adjacency list
+                While file has next line
+                    current line <- split the file by the comma to an array
+                    Create new list for adjacent vertices
+                    key vertex <- current line [0]
+                    For all elements in current line
+                        Add elements to list of adjacent vertices
+                    Put key vertex as key and list as value in hashmap for adjacency list
+                    file next line;
+     */
     public void readWghtGraphCSV(BufferedReader bfr) throws IOException {
         final int I = 0;        // constant index of element of every node
         LinkedList<VertexEdge> list;
@@ -52,6 +66,20 @@ public class Graph {
      * Read a csv file that contains the representation of both unweighted directed and undirected graph
      * @param bfr holds the csv file
      * @throws IOException if there is an error in I0
+     */
+    /*
+        Algorithm:
+            read weighted graph csv (file)
+                Initialize list for adjacent vertices
+                Initialize hashmap for adjacency list
+                While file has next line
+                    current line <- split the file by the comma to an array
+                    Create new list for adjacent vertices
+                    key vertex <- current line [0]
+                    For all elements in current line
+                        Add elements to list of adjacent vertices
+                    Put key vertex as key and list as value in hashmap for adjacency list
+                    file next line;
      */
     public void readUnWghtGraphCSV(BufferedReader bfr) throws IOException {
         final int WEIGHT = 1;   // assign 1 to every edge weight of the graph
@@ -80,6 +108,20 @@ public class Graph {
      * @param start source vertex
      * @return path of breadth first search result from the source vertex
      * @throws QueueNullException when the queue is null
+     */
+    /*
+        Algorithm:
+            breadthFS(start)
+                Initialize list for visited vertex
+                Initialize queue
+                Add start to queue
+                While queue is not empty
+                    current vertex <- poll the queue
+                    If list for visited vertex does not contain current vertex
+                        Add the current vertex to list
+                    For all adjacent vertex of current vertex
+                        If adjacent vertex is not in the list
+                            Add adjacent vertex to queue
      */
     public String breadthFirstSearch(Character start) throws QueueNullException{
         isVertex(start);
@@ -112,6 +154,20 @@ public class Graph {
      * @param start source vertex
      * @return path of depth first search result from the source vertex
      * @throws StackUnderflowException when the queue is null
+     */
+    /*
+        Algorithm:
+            depthFS(start)
+                Initialize list for visited vertex
+                Initialize stack
+                Add start to stack
+                While stack is not empty
+                    current vertex <- poll the stack
+                    If list for visited vertex does not contain current vertex
+                        Add the current vertex to list
+                    For all adjacent vertex of current vertex
+                        If adjacent vertex is not in the list
+                            Add adjacent vertex to stack
      */
     public String depthFS(Character start) throws StackUnderflowException{
         isVertex(start);
@@ -147,6 +203,7 @@ public class Graph {
     /*
         Algorithm:
             shortestPath(start, end)
+                Check if start is a vertex
                 Generate path cost table
                 vertex <- end
                 For all vertices in path cost table
@@ -188,17 +245,30 @@ public class Graph {
      * @param start source vertex
      * @return map of path cost table from source vertex to all vertices
      */
+    /*
+        Algorithm:
+            generatePathCostTable(start)
+                Initialize priority queue with cost as initial capacity
+                Initialize path cost table
+                Update the path cost of start vertex
+                Add adjacent vertices to priority queue
+                While priority queue is not empty
+                    current vertex <- poll priority queue
+                    previous vertex <- previous vertex of current vertex
+                    current cost <- current vertex cost in path cost table
+                    new cost <- previous vertex cost in path cost table add current vertex cost
+                    If new cost is less than new cost
+                        Update the path cost table of current vertex
+                        Add adjacent vertices of current vertex
+     */
     private Map<Character, VertexEdge> generatePathCostTable(Character start){
         Map<Character, VertexEdge> pathCost = new HashMap<>();
-        List<Character> seenVertex = new ArrayList<>();
         Queue<VertexEdge> queue = new PriorityQueue<>();
         Object[] vertices = adjList.keySet().toArray();
-        for (int i = 0; i < vertices.length; i++)
-            pathCost.put((Character) vertices[i], new VertexEdge('\0', Integer.MAX_VALUE));
+        for (Object vertex : vertices) pathCost.put((Character) vertex, new VertexEdge('\0', Integer.MAX_VALUE));
 
         // make the cost of start vertex to zero
         pathCost.put(start, new VertexEdge('\0', 0));
-        seenVertex.add(start);
         VertexEdge key = new VertexEdge();
         char prev;
         queue.addAll(adjList.get(start));
@@ -222,6 +292,15 @@ public class Graph {
      * @param s input
      * @throws InputMismatchException when input is not the list of vertices
      */
+    /*
+        Algorithm:
+            isVertex(v)
+                Get vertices in adjacency list
+                For all vertices
+                    If current vertex is equal to v
+                        Return
+                Throw Exception
+     */
     private void isVertex(Character s) throws InputMismatchException{
         Object[] vertices = adjList.keySet().toArray();
         for (Object v : vertices){
@@ -234,6 +313,15 @@ public class Graph {
     /**
      * Return the content of the csv file for unweighted graph
      * @return the content of the csv file
+     */
+    /*
+        Algorithm:
+            contentUnWeight()
+                Get vertices in adjacency list
+                For all vertices
+                    For all adjacent vertices of current vertex
+                        result <- adjacent vertex
+                    result <- add new line
      */
     public String contentUnWght(){
         StringBuilder sb = new StringBuilder();
@@ -251,6 +339,15 @@ public class Graph {
     /**
      * Return the content of the csv file for weighted graph
      * @return the content of the csv file
+     */
+    /*
+        Algorithm:
+            contentUnWeight()
+                Get vertices in adjacency list
+                For all vertices
+                    For all adjacent vertices of current vertex
+                        result <- adjacent vertex and its cost
+                    result <- add new line
      */
     public String contentWght(){
         StringBuilder sb = new StringBuilder();
@@ -275,14 +372,16 @@ public class Graph {
 
     /**
      * Set the type of the graph loaded
-     * @param graphType ype of the graph loaded
+     * @param graphType type of the graph loaded
      */
     public void setGraphType(String graphType) {
         this.graphType = graphType;
     }
 
 
-
+    /**
+     * Class for both vertex and edge of graph
+     */
     private static class VertexEdge implements Comparable<VertexEdge>{
 
         private char prev;
